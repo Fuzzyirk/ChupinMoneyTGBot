@@ -1,12 +1,10 @@
 import telebot
 from telebot import types
 import logic
-import os
-from dotenv import load_dotenv
+
 
 IDS = [216982492]
-load_dotenv()
-bot = telebot.TeleBot(os.getenv('TOKEN'))
+bot = telebot.TeleBot('1717562842:AAEqlMPkLkeH2H0NZPrJIFJOdXvINideOsQ')
 
 # TODO сделать деплой
 # TODO организовать код на вебхуках
