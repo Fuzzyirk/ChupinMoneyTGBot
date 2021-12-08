@@ -15,6 +15,7 @@ class Finance(BaseTable):
     tag = peewee.CharField()
     date = peewee.DateTimeField()
     name = peewee.CharField()
+    operation = peewee.CharField()
     total = peewee.FloatField()
     message = peewee.CharField()
 
@@ -22,7 +23,7 @@ class Finance(BaseTable):
 database.create_tables([Finance])
 
 
-def write_to_db(amount, message, category, tag, name='Max', total=0):
+def write_to_db(amount, message, category, tag, name, operation, total):
     date = datetime.datetime.today().strftime("%d.%m.%Y")
     new_finance = Finance.create(
         sum=amount,
@@ -30,13 +31,20 @@ def write_to_db(amount, message, category, tag, name='Max', total=0):
         tag=tag,
         date=date,
         name=name,
+        operation=operation,
         total=total,
         message=message
     )
 
 
-# def del_from_db(sum, tag):
-#     pass
+def del_from_db(finance_id):
+    try:
+        operation = Finance.get(Finance.id == finance_id)
+        operation.delete_instance()
+        return True
+    except Exception as err:
+        print(err)
+        return False
 
 
 def search_today():
@@ -45,13 +53,20 @@ def search_today():
     try:
         query = Finance.select().where(Finance.date == date).limit(5).order_by(Finance.id.desc())
         finance_selected = query.dicts().execute()
-        i = 0
         for finance in finance_selected:
-            i += 1
-            operations[i] = finance
+            operations[finance['id']] = finance
     except Exception as err:
         print(err)
     return operations
+
+
+def search_last():
+    try:
+        query = Finance.select().limit(1).order_by(Finance.id.desc())
+        finance_selected = query.dicts().execute()
+        return finance_selected[0]
+    except Exception as err:
+        print(err)
 
 
 def search_date():
